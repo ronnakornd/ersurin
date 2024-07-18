@@ -17,9 +17,10 @@ const Act = () => {
   const [selectedMonth, setSelectedMonth] = useState();
   const [selectedYear, setSelectedYear] = useState();
   const [selectedMember, setSelectedMember] = useState();
-  const [dates,setDates] = useState(null);
-  const [shift,setShift] = useState();
-  const [prevShift,setPrevShift] = useState();
+  const [dates, setDates] = useState(null);
+  const [shift, setShift] = useState();
+  const [members, setMembers] = useState([]);
+  const [prevShift, setPrevShift] = useState();
   const [actId, setActId] = useState(null);
 
   const handleSave = async () => {
@@ -27,12 +28,12 @@ const Act = () => {
       alert("Please create a table first");
       return;
     }
-    if(actId == null){
+    if (actId == null) {
       addAct();
-    }else{
+    } else {
       updateAct();
     }
-  }
+  };
 
   const fetchShift = async () => {
     const data = await getDocs(collection(db, "shifts"));
@@ -41,7 +42,9 @@ const Act = () => {
         ...doc.data(),
         id: doc.id,
       }));
-      const shiftData = shifts.find((shift) => shift.month === selectedMonth && shift.year === selectedYear);
+      const shiftData = shifts.find(
+        (shift) => shift.month === selectedMonth && shift.year === selectedYear
+      );
       if (shiftData) {
         const transformedDates = shiftData.data.map((item) => {
           return {
@@ -54,41 +57,13 @@ const Act = () => {
           };
         });
         setShift(transformedDates);
-        let prevMonth = (selectedMonth-1) === 0 ? 12 : selectedMonth-1;
-        let prevYear = (selectedMonth-1) === 0 ? selectedYear-1 : selectedYear;
-        const prevShiftData = shifts.find((shift) => shift.month === prevMonth && shift.year === prevYear);
+        let prevMonth = selectedMonth - 1 === 0 ? 12 : selectedMonth - 1;
+        let prevYear =
+          selectedMonth - 1 === 0 ? selectedYear - 1 : selectedYear;
+        const prevShiftData = shifts.find(
+          (shift) => shift.month === prevMonth && shift.year === prevYear
+        );
         const transformedPrevDates = prevShiftData.data.map((item) => {
-            return {
-              day: item.day.toDate(),
-              holiday: item.holiday,
-              morning: item.morning,
-              evening: item.evening,
-              extra: item.extra,
-              night: item.night,
-            };
-          });
-          setPrevShift(transformedPrevDates);
-      }else{
-        setShift(null);
-        setPrevShift(null);
-      }
-    }else {
-      setShift(null);
-      setPrevShift(null);
-    }
-  }
-
-  const fetchAct = async () => {
-    const data = await getDocs(collection(db, "acts"));
-    if (!data.empty) {
-      const acts = data.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      const act = acts.find((act) => act.month === selectedMonth && act.year === selectedYear);
-      if (act) {
-        setActId(act.id);
-        const transformedDates = act.data.map((item) => {
           return {
             day: item.day.toDate(),
             holiday: item.holiday,
@@ -98,25 +73,59 @@ const Act = () => {
             night: item.night,
           };
         });
+        setPrevShift(transformedPrevDates);
+      } else {
+        setShift(null);
+        setPrevShift(null);
+      }
+    } else {
+      setShift(null);
+      setPrevShift(null);
+    }
+  };
+
+  const fetchAct = async () => {
+    const data = await getDocs(collection(db, "acts"));
+    if (!data.empty) {
+      const acts = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      const act = acts.find(
+        (act) => act.month === selectedMonth && act.year === selectedYear
+      );
+      if (act) {
+        setActId(act.id);
+        const transformedDates = act.data.map((item) => {
+          let {day, ...exceptDayData} = item;
+          return {
+            day: item.day.toDate(),
+            ...exceptDayData
+          };
+        });
         setDates(transformedDates);
-      }else{
+      } else {
         setActId(null);
         setDates(null);
       }
-    }else {
+    } else {
       setActId(null);
       setDates(null);
     }
-  }
+  };
 
   const addAct = async () => {
     try {
-      await addDoc(collection(db, "acts"), { month: selectedMonth, year: selectedYear, data: dates });
+      await addDoc(collection(db, "acts"), {
+        month: selectedMonth,
+        year: selectedYear,
+        data: dates,
+      });
       alert("บันทึกสำเร็จ");
     } catch (error) {
       console.error("Error adding shift: ", error);
     }
-  }
+  };
 
   const updateAct = async () => {
     try {
@@ -125,23 +134,34 @@ const Act = () => {
     } catch (error) {
       console.error("Error updating shift: ", error);
     }
-  }
+  };
 
   const syncTable = async () => {
-       fetchShift();
-       let currentDates = dates;
-       currentDates.forEach((date,index) => {
-            date.holiday = shift[index].holiday;
-       });
-       setDates([...currentDates]);
-  }
+    fetchShift();
+    let currentDates = dates;
+    let prevDates = prevShift;
+    currentDates.forEach((date, index) => {
+      date.holiday = shift[index].holiday;
+      if (!shift[index].holiday) {
+        if (index == 0) {
+          let lastShift = prevShift.pop();
+          date.resus2 = lastShift.evening;
+          date.teaching = lastShift.night;
+        } else {
+          date.resus2 = shift[index - 1].evening;
+          date.teaching = shift[index - 1].night;
+        }
+        date.observe = shift[index].evening;
+      }
+    });
+    setDates([...currentDates]);
+  };
 
   useEffect(() => {
-        setActId(null);
-        fetchShift();
-        fetchAct();
-  },[selectedMonth,selectedYear]);
-
+    setActId(null);
+    fetchShift();
+    fetchAct();
+  }, [selectedMonth, selectedYear]);
 
   return (
     <>
@@ -153,11 +173,18 @@ const Act = () => {
         </div>
         <div className="flex justify-center items-center gap-2 p-5">
           <h1>เลือกรายชื่อ</h1>
-          <MemberSelector onChange={setSelectedMember} />
+          <MemberSelector
+            onChange={setSelectedMember}
+            parentMembers={setMembers}
+          />
         </div>
         <div className="flex gap-2">
-          <button className="btn btn-warning" onClick={syncTable}>sync table</button>
-          <button className="btn btn-primary" onClick={handleSave}>save</button>
+          <button className="btn btn-warning" onClick={syncTable}>
+            sync table
+          </button>
+          <button className="btn btn-primary" onClick={handleSave}>
+            save
+          </button>
         </div>
       </div>
       <ActTable
@@ -166,6 +193,7 @@ const Act = () => {
         selectedMember={selectedMember}
         onChange={setDates}
         value={dates}
+        members={members}
       />
     </>
   );

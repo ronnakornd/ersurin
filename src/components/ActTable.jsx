@@ -52,6 +52,7 @@ const ActTable = ({
   selectedMember,
   onChange,
   value,
+  members
 }) => {
   const [dates, setDates] = useState(generateDates(month, year));
   const toggleHoliday = (index) => {
@@ -68,7 +69,6 @@ const ActTable = ({
       return;
     }
     currentDates[index][shift] = selectedMember;
-    console.log(currentDates);
     onChange([...currentDates]);
     setDates([...currentDates]);
   };
@@ -80,14 +80,14 @@ const ActTable = ({
       setDates(generateDates(month, year));
       onChange(generateDates(month, year));
     }
-  }, [month, year, value]);
+  }, [month, year, value, members]);
 
-  return (
+return (
     <div className="container p-5">
-      <h2 className="text-2xl font-bold mb-4">
-        ตารางเวรในเวลา {month}/{year}
-      </h2>
-      <table className="table-auto w-full border-collapse">
+        <h2 className="text-2xl font-bold mb-4">
+            ตารางเวรในเวลา {month}/{year}
+        </h2>
+      <table className="table-auto text-sm w-full border-collapse">
         <thead>
           <tr>
             <th className="border px-4 py-2 border-black text-left w-2/12">
@@ -137,84 +137,84 @@ const ActTable = ({
                 onClick={() => toggleHoliday(index)}
               ></td>
               <td
-                className={`border px-4 py-2 border-black border-l-0   ${
+                className={`border px-px py-2 border-black border-l-0 text-xs   ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "resus1")}
                 style={{
-                  backgroundColor: date.resus1 ? date.resus1.color : "",
+                  backgroundColor: date.resus1 ? members.find(member => member.id == date.resus1.value)?.color  : "",
                 }}
               >
-                {date.resus1 ? date.resus1.label : ""}
+                {date.resus1 ? members.find(member => member.id == date.resus1.value)?.name : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0 ${
+                className={`border px-px py-2 border-black border-l-0 text-xs ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 style={{
-                  backgroundColor: date.resus2 ? date.resus2.color : "",
+                  backgroundColor: date.resus2 ? members.find(member => member.id == date.resus2.value)?.color : "",
                 }}
                 onClick={() => selectShift(index, "resus2")}
               >
-                {date.resus2 ? date.resus2.label : ""}
+                {date.resus2 ? members.find(member => member.id == date.resus2.value)?.name : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0 ${
+                className={`border px-px py-2 border-black border-l-0 text-xs ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "er1")}
-                style={{ backgroundColor: date.er1 ? date.er1.color : "" }}
+                style={{ backgroundColor: date.er1 ? members.find(member => member.id == date.er1.value)?.color : "" }}
               >
-                {date.er1 ? date.er1.label : ""}
+                {date.er1 ? members.find(member => member.id == date.er1.value)?.name : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0 ${
+                className={`border px-px py-2 border-black border-l-0 text-xs ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "er2")}
-                style={{ backgroundColor: date.er2 ? date.er2.color : "" }}
+                style={{ backgroundColor: date.er2 ? members.find(member => member.id == date.er2.value)?.color : "" }}
               >
-                {date.er2 ? date.er2.label : ""}
+                {date.er2 ? members.find(member => member.id == date.er2.value)?.name : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0 ${
+                className={`border px-px py-2 border-black border-l-0 text-xs ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "observe")}
                 style={{
-                  backgroundColor: date.observe ? date.observe.color : "",
+                  backgroundColor: date.observe ? members.find(member => member.id == date.observe.value)?.color : "",
                 }}
               >
-                {date.observe ? date.observe.label : ""}
+                {date.observe ? members.find(member => member.id == date.observe.value)?.name : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0 ${
+                className={`border px-px py-2 border-black border-l-0 text-xs ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "ems")}
-                style={{ backgroundColor: date.ems ? date.ems.color : "" }}
+                style={{ backgroundColor: date.ems ? members.find(member => member.id == date.ems.value)?.color : "" }}
               >
-                {date.ems ? date.ems.label : ""}
+                {date.ems ? members.find(member => member.id == date.ems.value)?.name : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0 ${
+                className={`border px-px py-2 border-black border-l-0 text-xs ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "teaching")}
                 style={{
-                  backgroundColor: date.teaching ? date.teaching.color : "",
+                  backgroundColor: date.teaching ? members.find(member => member.id == date.teaching.value)?.color : "",
                 }}
               >
-                {date.teaching ? date.teaching.label : ""}
+                {date.teaching ? members.find(member => member.id == date.teaching.value)?.name : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0 ${
+                className={`border px-px py-2 border-black border-l-0 text-xs ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "refer")}
-                style={{ backgroundColor: date.refer ? date.refer.color : "" }}
+                style={{ backgroundColor: date.refer ? members.find(member => member.id == date.refer.value)?.color : "" }}
               >
-                {date.refer ? date.refer.label : ""}
+                {date.refer ? members.find(member => member.id == date.refer.value)?.name : ""}
               </td>
             </tr>
           ))}
