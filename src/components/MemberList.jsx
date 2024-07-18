@@ -8,7 +8,7 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../firebaseconfig"; // Assuming db is exported from firebaseconfig.js
+import { db } from "../Firebaseconfig"; // Assuming db is exported from firebaseconfig.js
 import AddMemberForm from "./AddMemberForm";
 import { Compact } from "@uiw/react-color";
 // Define the component

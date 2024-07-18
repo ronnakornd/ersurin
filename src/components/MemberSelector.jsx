@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseconfig";
+import { db } from "../Firebaseconfig";
 import Select from "react-select";
 import { data } from "autoprefixer";
 import { color } from "@uiw/react-color";

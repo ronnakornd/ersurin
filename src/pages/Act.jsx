@@ -11,7 +11,7 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../firebaseconfig";
+import { db } from "../Firebaseconfig";
 
 const Act = () => {
   const [selectedMonth, setSelectedMonth] = useState();
