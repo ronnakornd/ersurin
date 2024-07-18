@@ -133,7 +133,7 @@ const DateTable = ({ month, year, editHoliday, selectedMember, members, onChange
                 {date.evening ? members.find(member => member.id == date.evening.value)?.name : ""}
               </td>
               <td
-                className="border px-4 py-2 border-black border-l-0"
+                className={`border px-4 py-2 border-black border-l-0`}
                 onClick={() => selectShift(index, "extra")}
                 style={{ backgroundColor: date.extra ?  members.find(member => member.id == date.extra.value)?.color: "" }}
               >
