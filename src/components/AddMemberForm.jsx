@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../Firebaseconfig"; // Ensure this import path matches your project structure
+import { db } from "../Firebaseconfig.js"; // Ensure this import path matches your project structure
 import { Compact } from "@uiw/react-color";
 
 const AddMemberForm = ({ fetchMember }) => {
