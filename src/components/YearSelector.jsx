@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 
-const YearSelector = ({ startYear = 1900, endYear = new Date().getFullYear(), onChange }) => {
-  const [selectedYear, setSelectedYear] = useState({ value: endYear, label: endYear });
+const YearSelector = ({ startYear = 1900, endYear = new Date().getFullYear()+1, onChange }) => {
+  const [selectedYear, setSelectedYear] = useState({ value: endYear-1, label: endYear+542 });
 
   const handleChange = (selectedOption) => {
     setSelectedYear(selectedOption);
@@ -13,8 +13,14 @@ const YearSelector = ({ startYear = 1900, endYear = new Date().getFullYear(), on
 
   const years = [];
   for (let year = startYear; year <= endYear; year++) {
-    years.push({ value: year, label: year });
+    years.push({ value: year, label: year+543 });
   }
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(selectedYear.value);
+    }
+  }, [selectedYear, onChange]);
 
   return (
     <div >

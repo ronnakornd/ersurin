@@ -6,6 +6,8 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './Layout';
 import Home from './pages/Home';
+import Member from './pages/Member';
+import Act from './pages/Act';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,6 +19,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
+              <Route path="/member" element={<Member />} />
+              <Route path="/act" element={<Act />} />
             </Route>
           </Routes>
         </Suspense>
