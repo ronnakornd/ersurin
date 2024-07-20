@@ -86,6 +86,7 @@ const SummaryTable = ({
             <th className="border border-black border-l-0">16.00-24.00</th>
             <th className="border border-black border-l-0">24.00-8.00</th>
             <th className="border border-black border-l-0">18.00-22.00</th>
+            <th className="border border-black border-l-0">total</th>
             <th className="border px-4 py-2 border-black border-l-0 ">
               Resus1
             </th>
@@ -106,6 +107,7 @@ const SummaryTable = ({
             <th className="border px-4 py-2 border-black border-l-0 ">
               Refer/AOC
             </th>
+            <th className="border px-4 py-2 border-black border-l-0">total</th>
           </tr>
         </thead>
         <tbody>
@@ -128,6 +130,9 @@ const SummaryTable = ({
                 </td>
                 <td className="border px-4 py-2 border-black border-l-0">
                     {shiftsData.filter((shift) => shift.extra? (shift.extra.value === member.id):"").length}
+                </td>
+                <td className="border px-4 py-2 border-black border-l-0">
+                    {shiftsData.filter((shift) => shift.morning? (shift.morning.value === member.id):"").length + shiftsData.filter((shift) => shift.evening? (shift.evening.value === member.id):"").length + shiftsData.filter((shift) => shift.night? (shift.night.value === member.id):"").length + shiftsData.filter((shift) => shift.extra? (shift.extra.value === member.id):"").length}
                 </td>
                 <td className="border px-4 py-2 border-black border-l-0">
                     {actsData.filter((act) => act.resus1? (act.resus1.value === member.id):"").length}
@@ -153,7 +158,9 @@ const SummaryTable = ({
                 <td className="border px-4 py-2 border-black border-l-0">
                     {actsData.filter((act) => act.refer? (act.refer.value === member.id):"").length}
                 </td>
-                
+                <td className="border px-4 py-2 border-black border-l-0">
+                    {actsData.filter((act) => act.resus1? (act.resus1.value === member.id):"").length + actsData.filter((act) => act.resus2? (act.resus2.value === member.id):"").length + actsData.filter((act) => act.er1? (act.er1.value === member.id):"").length + actsData.filter((act) => act.er2? (act.er2.value === member.id):"").length + actsData.filter((act) => act.observe? (act.observe.value === member.id):"").length + actsData.filter((act) => act.ems? (act.ems.value === member.id):"").length + actsData.filter((act) => act.teaching? (act.teaching.value === member.id):"").length + actsData.filter((act) => act.refer? (act.refer.value === member.id):"").length}
+                </td>
             </tr>
           ))}
         </tbody>
