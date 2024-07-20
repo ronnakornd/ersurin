@@ -9,7 +9,7 @@ function Header() {
        <div className="flex-none flex gap-2">
           <a href="/" className="btn">ตารางเวร</a>
           <a href="/act" className="btn">Act</a>
-          <a className="btn">สรุป</a>
+          <a href="/summary" className="btn" >สรุป</a>
           <a href="/member" className="btn">รายชื่อ</a>
        </div>
     </div>

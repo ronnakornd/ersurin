@@ -45,13 +45,10 @@ const Home = () => {
       if (shift) {
         setShiftId(shift.id);
         const transformedDates = shift.data.map((item) => {
+          let {day, ...exceptDayData} = item;
           return {
             day: item.day.toDate(),
-            holiday: item.holiday,
-            morning: item.morning,
-            evening: item.evening,
-            extra: item.extra,
-            night: item.night,
+            ...exceptDayData
           };
         });
         setDates(transformedDates);
@@ -68,7 +65,7 @@ const Home = () => {
   const addShift = async () => {
     try {
       await addDoc(collection(db, "shifts"), { month: selectedMonth, year: selectedYear, data: dates });
-      alert("saving successfully");
+      alert("บันทึกสำเร็จ");
     } catch (error) {
       console.error("Error adding shift: ", error);
     }
@@ -77,7 +74,7 @@ const Home = () => {
   const updateShift = async () => {
     try {
       await updateDoc(doc(db, "shifts", shiftId), { data: dates });
-      alert("saving successfully");
+      alert("บันทึกสำเร็จ");
     } catch (error) {
       console.error("Error updating shift: ", error);
     }
@@ -99,9 +96,10 @@ const Home = () => {
         </div>
         <div className="flex justify-center items-center gap-2 p-5">
           <h1>เลือกรายชื่อ</h1>
-          <MemberSelector onChange={setSelectedMember} parentMembers={setMembers} />
+          <MemberSelector onChange={setSelectedMember} value={selectedMember} parentMembers={setMembers} />
         </div>
         <div className="flex gap-2">
+          <button className="btn btn-neutral" onClick={()=>setSelectedMember(null)}>Unselect</button>
           <button
             className={`btn ${editHoliday ? "btn-error" : "btn-neutral"}`}
             onClick={() => setEditHoliday(!editHoliday)}

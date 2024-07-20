@@ -5,7 +5,7 @@ import Select from "react-select";
 import { data } from "autoprefixer";
 import { color } from "@uiw/react-color";
 
-function MemberSelector({onChange, parentMembers}) {
+function MemberSelector({onChange, parentMembers, value}) {
   const [members, setMembers] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
   const [membersOption, setMembersOption] = useState([]);
@@ -38,7 +38,8 @@ function MemberSelector({onChange, parentMembers}) {
 
   useEffect(() => {
       fetchMembers();
-  },[]);
+      setSelectedMember(value);
+  },[value]);
 
 
   const dot = (color = 'transparent') => ({

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
 // Function to generate dates for a given month and year
 const generateDates = (month, year) => {
   const dates = [];
@@ -10,6 +9,7 @@ const generateDates = (month, year) => {
     dates.push({
       day: new Date(date),
       holiday: date.getDay() === 0 || date.getDay() === 6 ? true : false,
+      leave: [],
       morning: null,
       evening: null,
       extra: null,
@@ -42,7 +42,15 @@ const dayColor = [
   "bg-purple-300", // Saturday
 ];
 
-const DateTable = ({ month, year, editHoliday, selectedMember, members, onChange, value }) => {
+const DateTable = ({
+  month,
+  year,
+  editHoliday,
+  selectedMember,
+  members,
+  onChange,
+  value,
+}) => {
   const [dates, setDates] = useState(generateDates(month, year));
   const toggleHoliday = (index) => {
     if (editHoliday) {
@@ -50,9 +58,16 @@ const DateTable = ({ month, year, editHoliday, selectedMember, members, onChange
       setDates([...dates]);
     }
   };
+
   const selectShift = (index, shift) => {
-    if(!selectedMember) return;
+    if (!selectedMember) return;
     let currentDates = dates;
+    if (currentDates[index].leave) {
+      if (currentDates[index].leave.includes(selectedMember.value)) {
+        alert(`${selectedMember.label} ขอไม่เวรวันนี้`);
+        return;
+      }
+    }
     if (currentDates[index][shift] == selectedMember) {
       currentDates[index][shift] = null;
       setDates([...currentDates]);
@@ -63,14 +78,31 @@ const DateTable = ({ month, year, editHoliday, selectedMember, members, onChange
     setDates([...currentDates]);
   };
 
+  const toggleLeave = (index) => {
+    if (!selectedMember) return;
+    let currentDates = dates;
+    if (!currentDates[index].leave) {
+      currentDates[index].leave = [];
+    }
+    if (currentDates[index].leave.includes(selectedMember.value)) {
+      currentDates[index].leave = currentDates[index].leave.filter(
+        (leave) => leave !== selectedMember.value
+      );
+    } else {
+      currentDates[index].leave.push(selectedMember.value);
+    }
+    setDates([...currentDates]);
+    onChange([...currentDates]);
+  };
+
   useEffect(() => {
     if (value != null) {
       setDates(value);
-    }else{
+    } else {
       setDates(generateDates(month, year));
       onChange(generateDates(month, year));
     }
-  }, [month, year,value, members]);
+  }, [month, year, value, members, selectedMember]);
 
   return (
     <div className="container p-5">
@@ -84,6 +116,7 @@ const DateTable = ({ month, year, editHoliday, selectedMember, members, onChange
               วันที่
             </th>
             <th className="border border-black border-l-0">วันหยุด</th>
+            <th className="border border-black border-l-0 ">ไม่เวร</th>
             <th className="border px-4 py-2 border-black border-l-0 ">
               8.00-16.00
             </th>
@@ -119,32 +152,90 @@ const DateTable = ({ month, year, editHoliday, selectedMember, members, onChange
                 onClick={() => toggleHoliday(index)}
               ></td>
               <td
-                className={`border px-4 py-2 border-black border-l-0   ${date.holiday ? "" : "bg-slate-400"}`}
-                onClick={() => selectShift(index, "morning")}
-                style={{ backgroundColor: date.morning ? members.find(member => member.id == date.morning.value)?.color : "" }}
+                className={`border p-0 border-black border-l-0 hover:bg-slate-600 ${
+                  date.leave
+                    ? date.leave.includes(
+                        selectedMember ? selectedMember.value : ""
+                      )
+                      ? "bg-red-400"
+                      : ""
+                    : ""
+                }`}
+                onClick={() => toggleLeave(index)}
               >
-                {date.morning ? members.find(member => member.id == date.morning.value)?.name : ""}
+                {!selectedMember && (
+                  <div className="flex w-full justify-start">
+                    {date.leave
+                      ? date.leave.map((leave) => {
+                          return <div className={`px-1 py-1`} style={{backgroundColor: members.find(item=>item.id == leave)?.color}}></div>;
+                        })
+                      : null}
+                  </div>
+                )}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0`}
-                style={{ backgroundColor: date.evening ? members.find(member => member.id == date.evening.value)?.color : "" }}
+                className={`border px-4 text-xs py-2 border-black border-l-0   ${
+                  date.holiday ? "" : "bg-slate-400"
+                }`}
+                onClick={() => selectShift(index, "morning")}
+                style={{
+                  backgroundColor: date.morning
+                    ? members.find((member) => member.id == date.morning.value)
+                        ?.color
+                    : "",
+                }}
+              >
+                {date.morning
+                  ? members.find((member) => member.id == date.morning.value)
+                      ?.name
+                  : ""}
+              </td>
+              <td
+                className={`border px-4 text-xs py-2 border-black border-l-0`}
+                style={{
+                  backgroundColor: date.evening
+                    ? members.find((member) => member.id == date.evening.value)
+                        ?.color
+                    : "",
+                }}
                 onClick={() => selectShift(index, "evening")}
               >
-                {date.evening ? members.find(member => member.id == date.evening.value)?.name : ""}
+                {date.evening
+                  ? members.find((member) => member.id == date.evening.value)
+                      ?.name
+                  : ""}
               </td>
               <td
-                className={`border px-4 py-2 border-black border-l-0  ${date.holiday ? "bg-slate-400" : ""}`}
+                className={`border px-4 text-xs py-2 border-black border-l-0  ${
+                  date.holiday ? "bg-slate-400" : ""
+                }`}
                 onClick={() => selectShift(index, "extra")}
-                style={{ backgroundColor: date.extra ?  members.find(member => member.id == date.extra.value)?.color: "" }}
+                style={{
+                  backgroundColor: date.extra
+                    ? members.find((member) => member.id == date.extra.value)
+                        ?.color
+                    : "",
+                }}
               >
-                {date.extra ? members.find(member => member.id == date.extra.value)?.name: ""}
+                {date.extra
+                  ? members.find((member) => member.id == date.extra.value)
+                      ?.name
+                  : ""}
               </td>
               <td
-                className="border px-4 py-2 border-black border-l-0"
+                className="border px-4 text-xs py-2 border-black border-l-0"
                 onClick={() => selectShift(index, "night")}
-                style={{ backgroundColor: date.night? members.find(member => member.id == date.night.value)?.color: "" }}
+                style={{
+                  backgroundColor: date.night
+                    ? members.find((member) => member.id == date.night.value)
+                        ?.color
+                    : "",
+                }}
               >
-                {date.night ? members.find(member => member.id == date.night.value)?.name : ""}
+                {date.night
+                  ? members.find((member) => member.id == date.night.value)
+                      ?.name
+                  : ""}
               </td>
             </tr>
           ))}

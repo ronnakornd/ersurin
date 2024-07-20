@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import YearSelector from "../components/YearSelector";
 import MonthSelector from "../components/MonthSelector";
-import ActTable from "../components/ActTable";
+import SummaryTable from "../components/SummaryTable";
 import MemberSelector from "../components/MemberSelector";
 import {
   collection,
@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../Firebaseconfig.js";
 
-const Act = () => {
+const Summary = () => {
   const [selectedMonth, setSelectedMonth] = useState();
   const [selectedYear, setSelectedYear] = useState();
   const [selectedMember, setSelectedMember] = useState();
@@ -165,32 +165,25 @@ const Act = () => {
           <MonthSelector onChange={setSelectedMonth} />
           <YearSelector onChange={setSelectedYear} />
         </div>
-        <div className="flex justify-center items-center gap-2 p-5">
+        <div className="flex invisible justify-center items-center gap-2 p-5">
           <h1>เลือกรายชื่อ</h1>
           <MemberSelector
             onChange={setSelectedMember}
             parentMembers={setMembers}
           />
         </div>
-        <div className="flex gap-2">
-          <button className="btn btn-warning" onClick={syncTable}>
-            sync table
-          </button>
-          <button className="btn btn-primary" onClick={handleSave}>
-            save
-          </button>
-        </div>
       </div>
-      <ActTable
+      <SummaryTable
         month={selectedMonth}
         year={selectedYear}
         selectedMember={selectedMember}
         onChange={setDates}
-        value={dates}
+        acts={dates}
         members={members}
+        shifts={shift}
       />
     </>
   );
 };
 
-export default Act;
+export default Summary;
