@@ -1,4 +1,10 @@
 @media print {
+    body {
+      margin: 0; /* Remove default margin */
+      padding: 0; /* Remove default padding */
+      background-color: white; /* Set background to white */
+      font-size: 7.5px !important; /* Adjust font size for printing */
+    }
     .print-container {
       color: black; /* Change text color to blue when printing */
       font-size: 7.5px !important; /* Adjust font size for printing */
