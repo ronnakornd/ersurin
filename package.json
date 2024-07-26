@@ -17,7 +17,8 @@
     "react-dom": "^18.3.1",
     "react-pick-color": "^2.0.0",
     "react-router-dom": "^6.24.1",
-    "react-select": "^5.8.0"
+    "react-select": "^5.8.0",
+    "react-to-print": "^2.15.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

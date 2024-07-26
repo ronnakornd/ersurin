@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import '../printStyles.css'
 // Function to generate dates for a given month and year
 const generateDates = (month, year) => {
   const dates = [];
@@ -42,15 +42,19 @@ const dayColor = [
   "bg-purple-300", // Saturday
 ];
 
-const DateTable = ({
-  month,
-  year,
-  editHoliday,
-  selectedMember,
-  members,
-  onChange,
-  value,
-}) => {
+const DateTable = React.forwardRef(
+  (
+    {
+      month,
+      year,
+      editHoliday,
+      selectedMember,
+      members,
+      onChange,
+      value,
+    },
+    ref
+  ) => {
   const [dates, setDates] = useState(generateDates(month, year));
   const toggleHoliday = (index) => {
     if (editHoliday) {
@@ -105,18 +109,18 @@ const DateTable = ({
   }, [month, year, value, members, selectedMember]);
 
   return (
-    <div className="container p-5">
+    <div className="container p-5 print-container" ref={ref}>
       <h2 className="text-2xl font-bold mb-4">
         ตารางเวรนอกเวลา {month}/{year}
       </h2>
-      <table className="table-auto w-full border-collapse">
+      <table className="table-auto w-full border-collapse print-container">
         <thead>
           <tr>
             <th className="border px-4 py-2 border-black text-left w-2/12">
               วันที่
             </th>
             <th className="border border-black border-l-0">วันหยุด</th>
-            <th className="border border-black border-l-0 ">ไม่เวร</th>
+            <th className="border border-black border-l-0 no-print ">ไม่เวร</th>
             <th className="border px-4 py-2 border-black border-l-0 ">
               8.00-16.00
             </th>
@@ -133,7 +137,7 @@ const DateTable = ({
         </thead>
         <tbody>
           {dates.map((date, index) => (
-            <tr key={index}>
+            <tr key={index} className="print-container">
               <td
                 className={`border px-3 py-2 border-black  ${
                   dayColor[date.day.getDay()]
@@ -152,7 +156,7 @@ const DateTable = ({
                 onClick={() => toggleHoliday(index)}
               ></td>
               <td
-                className={`border p-0 border-black border-l-0 hover:bg-slate-600 ${
+                className={`border p-0 border-black border-l-0 hover:bg-slate-600 no-print ${
                   date.leave
                     ? date.leave.includes(
                         selectedMember ? selectedMember.value : ""
@@ -174,7 +178,7 @@ const DateTable = ({
                 )}
               </td>
               <td
-                className={`border px-4 text-xs py-2 border-black border-l-0   ${
+                className={`border px-4  print-container py-2  border-black border-l-0   ${
                   date.holiday ? "" : "bg-slate-400"
                 }`}
                 onClick={() => selectShift(index, "morning")}
@@ -191,7 +195,7 @@ const DateTable = ({
                   : ""}
               </td>
               <td
-                className={`border px-4 text-xs py-2 border-black border-l-0`}
+                className={`border px-4  py-2 border-black border-l-0`}
                 style={{
                   backgroundColor: date.evening
                     ? members.find((member) => member.id == date.evening.value)
@@ -206,7 +210,7 @@ const DateTable = ({
                   : ""}
               </td>
               <td
-                className={`border px-4 text-xs py-2 border-black border-l-0  ${
+                className={`border px-4  py-2 border-black border-l-0  ${
                   date.holiday ? "bg-slate-400" : ""
                 }`}
                 onClick={() => selectShift(index, "extra")}
@@ -223,7 +227,7 @@ const DateTable = ({
                   : ""}
               </td>
               <td
-                className="border px-4 text-xs py-2 border-black border-l-0"
+                className="border px-4  py-2 border-black border-l-0"
                 onClick={() => selectShift(index, "night")}
                 style={{
                   backgroundColor: date.night
@@ -243,6 +247,6 @@ const DateTable = ({
       </table>
     </div>
   );
-};
+});
 
 export default DateTable;

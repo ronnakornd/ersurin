@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import YearSelector from "../components/YearSelector";
 import MonthSelector from "../components/MonthSelector";
 import ActTable from "../components/ActTable";
@@ -12,6 +12,8 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { db } from "../Firebaseconfig.js";
+import { useReactToPrint } from "react-to-print";
+
 
 const Act = () => {
   const [selectedMonth, setSelectedMonth] = useState();
@@ -22,7 +24,11 @@ const Act = () => {
   const [members, setMembers] = useState([]);
   const [prevShift, setPrevShift] = useState();
   const [actId, setActId] = useState(null);
+  const printRef = useRef();
 
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
   const handleSave = async () => {
     if (dates.length === 0) {
       alert("Please create a table first");
@@ -179,6 +185,9 @@ const Act = () => {
           <button className="btn btn-primary" onClick={handleSave}>
             save
           </button>
+          <button className="btn btn-info" onClick={handlePrint}>
+            Print
+          </button>
         </div>
       </div>
       <ActTable
@@ -188,9 +197,12 @@ const Act = () => {
         onChange={setDates}
         value={dates}
         members={members}
+        ref={printRef}
       />
     </>
   );
 };
+
+
 
 export default Act;
